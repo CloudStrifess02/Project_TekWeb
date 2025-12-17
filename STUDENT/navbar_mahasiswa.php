@@ -17,6 +17,7 @@ if (!isset($_SESSION['user_login']) || $_SESSION['role'] != 'student') {
     <title>Student Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <style>
         body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
         .card-event { transition: transform 0.2s; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-radius: 12px; overflow: hidden; }
@@ -37,6 +38,16 @@ if (!isset($_SESSION['user_login']) || $_SESSION['role'] != 'student') {
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-3">
+                         <a href="index.php" class="nav-link text-white active fw-semibold">
+                            <i class="bi bi-person me-1"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item me-3">
+                         <a href="student_dashboard.php" class="nav-link text-white active fw-semibold">
+                            <i class="bi bi-people-fill me-1"></i> Panitia
+                        </a>
+                    </li>
                     <li class="nav-item me-3">
                          <a href="my_applications.php" class="nav-link text-white active fw-semibold">
                             <i class="fas fa-file-alt me-1"></i> Lamaran Saya

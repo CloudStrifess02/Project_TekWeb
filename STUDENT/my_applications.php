@@ -1,12 +1,6 @@
 <?php
-session_start();
 require_once '../LOGIN/connection.php';
-
-// Cek Login Student
-if (!isset($_SESSION['user_login']) || $_SESSION['role'] != 'student') {
-    header("Location: ../LOGIN/login.php");
-    exit();
-}
+include('navbar_mahasiswa.php');
 
 $email = $_SESSION['email'];
 
@@ -30,25 +24,7 @@ $query = "SELECT r.*,
 $result = mysqli_query($conn, $query);
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <title>Lamaran Saya</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="bg-light">
-
-<nav class="navbar navbar-dark bg-primary mb-4 shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="student_dashboard.php">
-            <i class="fas fa-arrow-left me-2"></i> Dashboard
-        </a>
-        <span class="text-white fw-bold">Riwayat Lamaran Saya</span>
-    </div>
-</nav>
-
-<div class="container">
+<div class="container mt-4 mb-5">
     <div class="card shadow border-0 rounded-4">
         <div class="card-body p-4">
             <h4 class="mb-4 text-primary"><i class="fas fa-clipboard-list me-2"></i>Status Pendaftaran</h4>
