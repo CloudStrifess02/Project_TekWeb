@@ -1,6 +1,6 @@
 <?php
 // register.php
-require_once 'connection.php';
+require_once '../koneksi.php';
 
 if (isset($_POST['register'])) {
     $name = mysqli_real_escape_string($conn, $_POST['name']);

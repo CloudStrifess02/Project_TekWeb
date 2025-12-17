@@ -24,6 +24,23 @@ if (!isset($_SESSION['user_login']) || $_SESSION['role'] != 'student') {
         .card-event:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
         .poster-img { height: 180px; object-fit: cover; width: 100%; }
         .badge-posisi { font-size: 0.8rem; background-color: #e3f2fd; color: #0d6efd; border: 1px solid #0d6efd; }
+        .profile-header-bg {
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            height: 120px;
+            border-radius: 10px 10px 0 0;
+        }
+        .profile-img-wrap {
+            margin-top: -60px;
+            text-align: center;
+        }
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+            background-color: #fff;
+        }
     </style>
 </head>
 <body>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../LOGIN/connection.php';
+require_once '../koneksi.php';
 
 $event_id = $_GET['event_id'];
 $q_event = mysqli_query($conn, "SELECT event_name FROM events WHERE event_id = '$event_id'");

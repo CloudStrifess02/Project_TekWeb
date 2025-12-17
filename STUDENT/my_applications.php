@@ -1,5 +1,5 @@
 <?php
-require_once '../LOGIN/connection.php';
+require_once '../koneksi.php';
 include('navbar_mahasiswa.php');
 
 $email = $_SESSION['email'];

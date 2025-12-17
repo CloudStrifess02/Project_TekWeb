@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../LOGIN/connection.php';
+require_once '../koneksi.php';
 
 $reg_id = $_GET['reg_id'];
 $query = "SELECT r.*, e.event_name 
