@@ -2,11 +2,10 @@
 require_once '../koneksi.php';
 include("navbar_admin.php");
 
-// 3. Ambil semua event dari tabel 'events'
 $query = "SELECT * FROM events ORDER BY created_at DESC";
 $result = mysqli_query($conn, $query);
 
-// Cek jika query error
+
 if (!$result) {
     die("Error mengambil data event: " . mysqli_error($conn));
 }
@@ -88,12 +87,7 @@ if (!$result) {
                                         <td class="text-center">
                                             <a href="view_positions.php?event_id=<?= $e['event_id'] ?>" class="btn btn-info btn-sm text-white me-1" title="Lihat Panitia">
                                                 <i class="fas fa-users me-1"></i> Panitia
-                                            </a>
-                                            
-                                            <a href="add_position.php?event_id=<?= $e['event_id'] ?>" class="btn btn-success btn-sm me-1" title="Tambah Posisi">
-                                                <i class="fas fa-user-plus"></i>
-                                            </a>
-
+                                        </a>
                                             <a href="delete_event.php?id=<?= $e['event_id'] ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Yakin hapus event ini? Semua data posisi dan pendaftar di dalamnya akan ikut terhapus!');">
                                                 <i class="fas fa-trash"></i>
                                             </a>

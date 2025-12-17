@@ -8,30 +8,31 @@ if (!isset($_SESSION['user_login']) || $_SESSION['role'] !== 'admin') {
 }
 
 if (isset($_GET['id'])) {
-    $event_id = mysqli_real_escape_string($conn, $_GET['id']);
+    
+    $user_id = mysqli_real_escape_string($conn, $_GET['id']);
 
-    $query_cek = "SELECT event_poster FROM events WHERE event_id = '$event_id'";
+    $query_cek = "SELECT cv_file FROM registrations WHERE user_id = '$user_id'";
     $result_cek = mysqli_query($conn, $query_cek);
     $data = mysqli_fetch_assoc($result_cek);
-
-    $query_delete = "DELETE FROM events WHERE event_id = '$event_id'";
+    
+    $query_delete = "DELETE FROM users WHERE id = '$user_id'";
 
     if (mysqli_query($conn, $query_delete)) {
         
-        if ($data && !empty($data['event_poster'])) {
-            $file_path = "../uploads/" . $data['event_poster'];
+        if ($data && !empty($data['cv_file'])) {
+            $file_path = "../uploads/docs/" . $data['cv_file'];
             if (file_exists($file_path)) {
                 unlink($file_path);
             }
         }
 
-        header("Location: admin_dashboard.php?msg=deleted");
+        header("Location: user_view.php?msg=deleted");
         exit();
     } else {
         echo "Gagal menghapus event: " . mysqli_error($conn);
     }
 } else {
-    header("Location: admin_dashboard.php");
+    header("Location: user_view.php");
     exit();
 }
 ?>

@@ -1,5 +1,4 @@
 <?php
-// register.php
 require_once '../koneksi.php';
 
 if (isset($_POST['register'])) {
@@ -7,25 +6,19 @@ if (isset($_POST['register'])) {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // --- SATPAM BARU: CEK DOMAIN EMAIL ---
-    $domain = substr(strrchr($email, "@"), 1); // Ambil teks setelah @
+    $domain = substr(strrchr($email, "@"), 1);
     
     if ($domain !== 'john.petra.ac.id') {
-        // Jika bukan email Petra, tolak!
         echo "<script>
             alert('REGISTRASI DITOLAK!\\nHanya email @john.petra.ac.id yang boleh mendaftar.');
             window.location.href='register.php';
         </script>";
-        exit(); // Stop proses, jangan lanjut ke bawah
+        exit();
     }
-    // -------------------------------------
-
-    // Cek apakah email sudah ada di database
     $cek_email = mysqli_query($conn, "SELECT email FROM users WHERE email = '$email'");
     if (mysqli_num_rows($cek_email) > 0) {
         echo "<script>alert('Email ini sudah terdaftar!');</script>";
     } else {
-        // Masukkan ke database
         $query = "INSERT INTO users (name, email, password, role) VALUES ('$name', '$email', '$password', 'student')";
         
         if (mysqli_query($conn, $query)) {

@@ -2,13 +2,11 @@
 session_start();
 require_once '../koneksi.php';
 
-// Cek Admin
 if (!isset($_SESSION['user_login']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../LOGIN/login.php");
     exit();
 }
 
-// Pastikan pos_id ada di URL
 if (!isset($_GET['pos_id'])) {
     header("Location: admin_dashboard.php");
     exit();
@@ -16,14 +14,12 @@ if (!isset($_GET['pos_id'])) {
 
 $pos_id = $_GET['pos_id'];
 
-// 1. Ambil Info Posisi & Event
 $q_info = mysqli_query($conn, "SELECT p.position_name, e.event_name, e.event_id 
                                FROM positions p 
                                JOIN events e ON p.event_id = e.event_id 
                                WHERE p.position_id = '$pos_id'");
 $info = mysqli_fetch_assoc($q_info);
 
-// 2. Ambil Daftar Pelamar (JOIN tabel registrations & users)
 $query = "SELECT r.*, u.name, u.email 
           FROM registrations r 
           JOIN users u ON r.user_id = u.id 
@@ -44,7 +40,6 @@ $result = mysqli_query($conn, $query);
             font-weight: 600;
             cursor: pointer;
         }
-        /* Memberikan warna teks pada dropdown agar lebih jelas */
         select option[value="pending"] { color: #856404; }
         select option[value="accepted"] { color: #155724; }
         select option[value="declined"] { color: #721c24; }
@@ -120,7 +115,6 @@ $result = mysqli_query($conn, $query);
 
         originalElement.disabled = true;
 
-        // Gunakan path yang benar ke file pemroses
         fetch('process_selection.php?id=' + regId + '&action=' + newStatus)
             .then(response => {
                 if (!response.ok) {

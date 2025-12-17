@@ -1,20 +1,18 @@
 <?php
 session_start();
-include '../koneksi.php'; // Pastikan path ke koneksi benar
+include '../koneksi.php'; 
 include('navbar_mahasiswa.php');
 
 $user_id = $_SESSION['id'];
-// 2. Proses Update Profile
 if (isset($_POST['update_profile'])) {
     $nama = mysqli_real_escape_string($conn, $_POST['nama']);
     $nrp = mysqli_real_escape_string($conn, $_POST['nrp']);
     $biodata = mysqli_real_escape_string($conn, $_POST['biodata']);
     
-    // Logic Upload Foto
     $foto_query = "";
     if (!empty($_FILES['foto']['name'])) {
         $foto_name = time() . '_' . $_FILES['foto']['name'];
-        $target = "../uploads/" . $foto_name; // Pastikan folder 'uploads' ada di luar folder student
+        $target = "../uploads/" . $foto_name; 
         if (move_uploaded_file($_FILES['foto']['tmp_name'], $target)) {
             $foto_query = ", profile_picture='$foto_name'";
         }
@@ -29,12 +27,9 @@ if (isset($_POST['update_profile'])) {
     }
 }
 
-// 3. Ambil Data User
 $user_query = mysqli_query($conn, "SELECT * FROM users WHERE id = '$user_id'");
 $user = mysqli_fetch_assoc($user_query);
 
-// 4. Ambil History Panitia (JOIN tables: registrations -> positions -> events)
-// Hanya mengambil yang statusnya 'accepted'
 $history_query = "
     SELECT 
         e.event_name, 
@@ -52,7 +47,6 @@ $history_result = mysqli_query($conn, $history_query);
 ?>
 <div class="container mt-4 mb-5">
     <div class="row">
-        <!-- KOLOM KIRI: PROFIL USER -->
         <div class="col-lg-4 mb-4">
             <div class="card shadow-sm border-0">
                 <div class="profile-header-bg"></div>
@@ -184,7 +178,6 @@ $history_result = mysqli_query($conn, $history_query);
     </div>
 </div>
 
-<!-- Modal Edit Profil -->
 <div class="modal fade" id="editProfileModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">

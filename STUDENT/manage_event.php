@@ -10,7 +10,6 @@ if (!isset($_SESSION['id']) || !isset($_GET['id'])) {
 $id = $_SESSION['id'];
 $event_id = $_GET['id'];
 
-// VALIDASI: Pastikan yang akses adalah pembuat event (created_by)
 $check_owner = mysqli_query($conn, "SELECT * FROM events WHERE event_id='$event_id' AND created_by='$id'");
 if (mysqli_num_rows($check_owner) == 0) {
     echo "<script>alert('Anda bukan panitia inti/pembuat event ini!'); window.location='index.php';</script>";
@@ -18,7 +17,6 @@ if (mysqli_num_rows($check_owner) == 0) {
 }
 $event_data = mysqli_fetch_assoc($check_owner);
 
-// --- LOGIKA 1: TAMBAH POSISI/DIVISI ---
 if (isset($_POST['add_position'])) {
     $pos_name = mysqli_real_escape_string($conn, $_POST['position_name']);
     $quota = (int) $_POST['quota'];
@@ -26,7 +24,6 @@ if (isset($_POST['add_position'])) {
     echo "<script>alert('Divisi berhasil ditambahkan'); window.location='manage_event.php?id=$event_id';</script>";
 }
 
-// --- LOGIKA 2: TERIMA/TOLAK ANGGOTA ---
 if (isset($_GET['action']) && isset($_GET['reg_id'])) {
     $reg_id = $_GET['reg_id'];
     $action = $_GET['action'];
@@ -34,13 +31,11 @@ if (isset($_GET['action']) && isset($_GET['reg_id'])) {
     if ($action == 'accept') {
         mysqli_query($conn, "UPDATE registrations SET status='accepted' WHERE registration_id='$reg_id'");
     } elseif ($action == 'kick' || $action == 'decline') {
-        // Bisa di-delete atau set status declined. Di sini kita set declined agar history tetap ada.
         mysqli_query($conn, "UPDATE registrations SET status='declined' WHERE registration_id='$reg_id'");
     }
     echo "<script>window.location='manage_event.php?id=$event_id';</script>";
 }
 
-// --- LOGIKA 3: UPDATE EVENT ---
 if (isset($_POST['update_event'])) {
     $name = mysqli_real_escape_string($conn, $_POST['event_name']);
     $desc = mysqli_real_escape_string($conn, $_POST['description']);
@@ -48,7 +43,6 @@ if (isset($_POST['update_event'])) {
     echo "<script>alert('Info event diupdate'); window.location='manage_event.php?id=$event_id';</script>";
 }
 
-// AMBIL DATA PENDAFTAR
 $query_applicants = "
     SELECT r.*, u.name as mhs_name, u.nrp, u.email, p.position_name 
     FROM registrations r 
@@ -59,7 +53,6 @@ $query_applicants = "
 ";
 $applicants = mysqli_query($conn, $query_applicants);
 
-// AMBIL DATA POSISI
 $positions = mysqli_query($conn, "SELECT * FROM positions WHERE event_id='$event_id'");
 ?>
 
@@ -71,7 +64,6 @@ $positions = mysqli_query($conn, "SELECT * FROM positions WHERE event_id='$event
 </head>
 <body class="bg-light">
     
-    <!-- Navbar Sederhana -->
     <nav class="navbar navbar-dark bg-dark mb-4">
         <div class="container">
             <span class="navbar-brand">Kelola Event: <?php echo htmlspecialchars($event_data['event_name']); ?></span>
@@ -82,9 +74,7 @@ $positions = mysqli_query($conn, "SELECT * FROM positions WHERE event_id='$event
     <div class="container">
         
         <div class="row">
-            <!-- KOLOM KIRI: EDIT EVENT & TAMBAH DIVISI -->
             <div class="col-md-4">
-                <!-- Card Edit Info -->
                 <div class="card shadow mb-4">
                     <div class="card-header bg-primary text-white">Edit Informasi Dasar</div>
                     <div class="card-body">
@@ -102,7 +92,6 @@ $positions = mysqli_query($conn, "SELECT * FROM positions WHERE event_id='$event
                     </div>
                 </div>
 
-                <!-- Card Tambah Divisi -->
                 <div class="card shadow">
                     <div class="card-header bg-success text-white">Tambah Divisi / Posisi</div>
                     <div class="card-body">
@@ -131,7 +120,6 @@ $positions = mysqli_query($conn, "SELECT * FROM positions WHERE event_id='$event
                 </div>
             </div>
 
-            <!-- KOLOM KANAN: MANAGE PENDAFTAR -->
             <div class="col-md-8">
                 <div class="card shadow">
                     <div class="card-header bg-white">

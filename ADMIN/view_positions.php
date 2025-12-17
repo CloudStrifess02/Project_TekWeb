@@ -2,7 +2,6 @@
 session_start();
 require_once '../koneksi.php';
 
-// Cek Akses Admin
 if (!isset($_SESSION['user_login']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../LOGIN/login.php");
     exit();
@@ -10,11 +9,9 @@ if (!isset($_SESSION['user_login']) || $_SESSION['role'] !== 'admin') {
 
 $event_id = $_GET['event_id'];
 
-// Ambil Info Event
 $q_event = mysqli_query($conn, "SELECT * FROM events WHERE event_id = '$event_id'");
 $event = mysqli_fetch_assoc($q_event);
 
-// Ambil Daftar Posisi di Event ini
 $q_pos = mysqli_query($conn, "SELECT * FROM positions WHERE event_id = '$event_id' ORDER BY position_name ASC");
 ?>
 

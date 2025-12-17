@@ -1,7 +1,6 @@
 <?php
     session_start();
 
-    // 1. Cek Session: Pastikan user sudah login dan role-nya admin
     if (!isset($_SESSION['user_login']) || $_SESSION['role'] !== 'admin') {
         header("Location: ../LOGIN/login.php");
         exit();
@@ -39,7 +38,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item me-3">
-                         <a href="index.php" class="nav-link text-white active fw-semibold">
+                         <a href="user_view.php" class="nav-link text-white active fw-semibold">
                             <i class="bi bi-person me-1"></i> Users
                         </a>
                     </li>

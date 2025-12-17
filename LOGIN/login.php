@@ -1,6 +1,4 @@
 <?php
-// --- TAMBAHAN WAJIB ---
-// Memanggil file settingan Google
 require_once 'config_google.php'; 
 ?>
 
@@ -14,13 +12,11 @@ require_once 'config_google.php';
         input { width: 93%; padding: 8px; margin: 5px 0; }
         button { width: 100%; padding: 10px; cursor: pointer; }
         
-        /* Style untuk pemisah */
         .separator { text-align: center; margin: 20px 0; color: #666; position: relative; }
         .separator::before, .separator::after { content: ""; height: 1px; background: #ccc; position: absolute; top: 50%; width: 40%; }
         .separator::before { left: 0; }
         .separator::after { right: 0; }
 
-        /* Style Tombol Google */
         .google-btn {
             background-color: #dd4b39;
             color: white;
@@ -36,14 +32,13 @@ require_once 'config_google.php';
         }
         .google-btn:hover { background-color: #c23321; }
 
-        /* Style Link Register */
-        .register-link {
+                .register-link {
             text-align: center; 
             margin-top: 20px; 
             font-size: 14px;
         }
         .register-link a {
-            color: #2196F3; /* Warna biru standar link */
+            color: #2196F3; 
             text-decoration: none;
             font-weight: bold;
         }

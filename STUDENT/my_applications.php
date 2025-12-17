@@ -4,12 +4,10 @@ include('navbar_mahasiswa.php');
 
 $email = $_SESSION['email'];
 
-// Ambil User ID
 $q_user = mysqli_query($conn, "SELECT id FROM users WHERE email = '$email'");
 $d_user = mysqli_fetch_assoc($q_user);
 $user_id = $d_user['id'];
 
-// Ambil Data Lamaran
 $query = "SELECT r.*, 
           e.event_name, e.event_date, e.event_location,
           p1.position_name as pos_utama,

@@ -2,7 +2,7 @@
 session_start();
 include '../koneksi.php';
 
-// Cek Login
+
 if (!isset($_SESSION['id'])) {
     header("Location: ../LOGIN/login.php");
     exit;
@@ -17,16 +17,15 @@ if (isset($_POST['create_event'])) {
     $location = mysqli_real_escape_string($conn, $_POST['location']);
     $category = $_POST['category'];
 
-    // Upload Poster
     $poster = "default_event.png";
     if (!empty($_FILES['poster']['name'])) {
         $poster = "event_" . time() . ".png";
         move_uploaded_file($_FILES['poster']['tmp_name'], "../uploads/" . $poster);
     }
 
-    // Insert dengan created_by = id
+
     $query = "INSERT INTO events (event_name, event_description, event_date, event_end_date, event_location, event_category, event_poster, event_status, created_by) 
-              VALUES ('$name', '$desc', '$date_start', '$date_end', '$location', '$category', '$poster', 'published', '$id')";
+              VALUES ('$name', '$desc', '$date_start', '$date_end', '$location', '$category', '$poster', 'draft', '$id')";
 
     if (mysqli_query($conn, $query)) {
         echo "<script>alert('Event berhasil dibuat! Anda sekarang adalah Ketua Panitia event ini.'); window.location='index.php';</script>";
@@ -86,7 +85,7 @@ if (isset($_POST['create_event'])) {
                         <label>Poster Event</label>
                         <input type="file" name="poster" class="form-control" accept="image/*">
                     </div>
-                    <button type="submit" name="create_event" class="btn btn-success w-100">Publikasikan Event</button>
+                    <button type="submit" name="create_event" class="btn btn-success w-100">Submit Event</button>
                     <a href="index.php" class="btn btn-secondary w-100 mt-2">Batal</a>
                 </form>
             </div>

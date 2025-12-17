@@ -2,47 +2,41 @@
 require_once '../koneksi.php';
 include('navbar_mahasiswa.php');
 
-// Ambil ID User
 $email_sess = $_SESSION['email'];
 $q_u = mysqli_query($conn, "SELECT id FROM users WHERE email = '$email_sess'");
 $d_u = mysqli_fetch_assoc($q_u);
 $my_id = $d_u['id'];
 
-// --- LOGIKA FILTER & SORTING ---
-// Base Query: Mengambil data posisi, event, dan menghitung sisa slot
 $sql = "SELECT p.*, e.event_name, e.event_date, e.event_poster, e.event_category, e.event_status,
         (p.quota - (SELECT COUNT(*) FROM registrations r WHERE r.position_id = p.position_id)) as sisa_slot
         FROM positions p 
         JOIN events e ON p.event_id = e.event_id 
         WHERE e.event_status = 'published'";
 
-// 1. Filter Kategori Event
 if (isset($_GET['kategori']) && $_GET['kategori'] != '') {
     $kat = mysqli_real_escape_string($conn, $_GET['kategori']);
     $sql .= " AND e.event_category = '$kat'";
 }
 
-// 2. Filter Nama Divisi (Menggunakan LIKE agar fleksibel)
 if (isset($_GET['divisi']) && $_GET['divisi'] != '') {
     $div = mysqli_real_escape_string($conn, $_GET['divisi']);
     $sql .= " AND p.position_name LIKE '%$div%'";
 }
 
-// 3. Logic Sorting (Urutan)
 $sort_option = isset($_GET['sort']) ? $_GET['sort'] : 'date_asc';
 
 switch ($sort_option) {
     case 'date_asc':
-        $sql .= " ORDER BY e.event_date ASC"; // Tanggal Terdekat
+        $sql .= " ORDER BY e.event_date ASC"; 
         break;
     case 'date_desc':
-        $sql .= " ORDER BY e.event_date DESC"; // Tanggal Terjauh
+        $sql .= " ORDER BY e.event_date DESC";
         break;
     case 'slot_desc':
-        $sql .= " ORDER BY sisa_slot DESC"; // Slot Terbanyak
+        $sql .= " ORDER BY sisa_slot DESC"; 
         break;
     case 'slot_asc':
-        $sql .= " ORDER BY sisa_slot ASC"; // Slot Tersedikit (Mau habis)
+        $sql .= " ORDER BY sisa_slot ASC"; 
         break;
     default:
         $sql .= " ORDER BY e.event_date ASC";
@@ -105,13 +99,11 @@ $result = mysqli_query($conn, $sql);
             if ($result && mysqli_num_rows($result) > 0) {
                 while($row = mysqli_fetch_assoc($result)) {
                     $kuota = $row['quota'];
-                    $sisa = $row['sisa_slot']; // Hasil hitungan dari Query SQL
+                    $sisa = $row['sisa_slot']; 
                     
                     $pos_id = $row['position_id'];
                     $cek_saya = mysqli_query($conn, "SELECT * FROM registrations WHERE user_id='$my_id' AND position_id='$pos_id'");
                     $sudah_daftar = (mysqli_num_rows($cek_saya) > 0);
-
-                    // Gambar
                     $img_src = !empty($row['event_poster']) ? "../uploads/".$row['event_poster'] : "https://via.placeholder.com/400x200?text=Event+Poster";
             ?>
             <div class="col-md-4 mb-4">
