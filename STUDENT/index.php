@@ -79,8 +79,9 @@ $history_result = mysqli_query($conn, $history_query);
                 </div>
             </div>
         </div>
+        
+       
 
-        <!-- KOLOM KANAN: HISTORY PANITIA -->
         <div class="col-lg-8">
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-white py-3">
@@ -133,6 +134,49 @@ $history_result = mysqli_query($conn, $history_query);
                                 <?php endif; ?>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <?php
+        $my_events = mysqli_query($conn, "SELECT * FROM events WHERE created_by = '$user_id' ORDER BY event_date DESC");
+        ?>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                        <h5 class="mb-0 fw-bold text-success">Event Yang Saya Kelola (Ketua Panitia)</h5>
+                        <a href="create_event.php" class="btn btn-success btn-sm">+ Buat Event Baru</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <?php if (mysqli_num_rows($my_events) > 0): ?>
+                                <?php while($evt = mysqli_fetch_assoc($my_events)): ?>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h5 class="card-title"><?php echo htmlspecialchars($evt['event_name']); ?></h5>
+                                                <p class="card-text text-muted small">
+                                                    <?php echo date('d M Y', strtotime($evt['event_date'])); ?>
+                                                </p>
+                                                <span class="badge bg-primary mb-2"><?php echo $evt['event_category']; ?></span>
+                                            </div>
+                                            <div class="card-footer bg-white border-top-0">
+                                                <a href="manage_event.php?id=<?php echo $evt['event_id']; ?>" class="btn btn-outline-primary w-100">
+                                                    Kelola Event & Anggota
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <div class="col-12 text-center text-muted py-4">
+                                    Anda belum membuat event apapun. Klik tombol <strong>+ Buat Event Baru</strong> untuk memulai.
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>

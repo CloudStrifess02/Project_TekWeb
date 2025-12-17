@@ -92,10 +92,7 @@ $result = mysqli_query($conn, $sql);
                     </div>
 
                     <div class="col-md-3 d-flex align-items-end">
-                        <div class="">
-                            <a href="add_event.php" class="btn btn-primary w-100 me-2"><i class="fas fa-plus me-1"></i> Tambah Event Baru</a>
-                            <button type="submit" class="btn btn-primary w-100 me-2"><i class="fas fa-filter"></i> Terapkan</button>
-                        </div>
+                        <button type="submit" class="btn btn-primary w-100 me-2"><i class="fas fa-filter"></i> Terapkan</button>
                         <a href="student_dashboard.php" class="btn btn-outline-secondary"><i class="fas fa-sync"></i> Reset</a>
                     </div>
                 </div>
