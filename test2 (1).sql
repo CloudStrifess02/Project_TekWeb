@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 17, 2025 at 02:21 PM
+-- Generation Time: Dec 17, 2025 at 09:15 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,47 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `test2`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `applications`
---
-
-CREATE TABLE `applications` (
-  `application_id` int(100) NOT NULL,
-  `status` enum('pending','accepted','rejected','') NOT NULL,
-  `applied_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `user_id` int(11) DEFAULT NULL,
-  `position_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `committees`
---
-
-CREATE TABLE `committees` (
-  `id` int(11) NOT NULL,
-  `event_name` varchar(100) NOT NULL,
-  `division` varchar(50) NOT NULL,
-  `event_date` date NOT NULL,
-  `max_slots` int(11) NOT NULL,
-  `filled_slots` int(11) DEFAULT 0,
-  `description` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `committees`
---
-
-INSERT INTO `committees` (`id`, `event_name`, `division`, `event_date`, `max_slots`, `filled_slots`, `description`) VALUES
-(1, 'Natal Petra 2025', 'Acara', '2025-12-25', 10, 2, 'Mengatur rundown dan pengisi acara natal.'),
-(2, 'Natal Petra 2025', 'Humas', '2025-12-25', 5, 5, 'Mencari sponsorship dan publikasi.'),
-(3, 'Welcome Party', 'Perlengkapan', '2025-08-20', 15, 0, 'Menyiapkan sound system dan panggung.'),
-(4, 'Welcome Party', 'Konsumsi', '2025-08-20', 8, 7, 'Menyiapkan makanan untuk maba.'),
-(5, 'Dies Natalis', 'Acara', '2025-09-15', 12, 5, 'Merancang konsep ulang tahun kampus.');
 
 -- --------------------------------------------------------
 
@@ -87,7 +46,10 @@ CREATE TABLE `events` (
 --
 
 INSERT INTO `events` (`event_id`, `event_name`, `event_description`, `event_date`, `event_end_date`, `event_location`, `event_category`, `event_poster`, `event_status`, `created_at`, `created_by`) VALUES
-(1, 'Career Kickstart', 'urgent', '2025-12-18', '2025-12-15', 'gedung Q', 'Open Recruitment', 'event_1765976800.png', 'draft', '2025-12-17 13:06:40', NULL);
+(1, 'Career Kickstart', 'urgent', '2025-12-18', '2025-12-15', 'gedung Q', 'Open Recruitment', 'event_1765976800.png', 'published', '2025-12-17 14:40:56', NULL),
+(2, 'Capital', 'DJAHDQJEAO', '2025-12-20', '2025-12-22', 'gedung Q', 'Seminar', 'event_1765981854.png', 'published', '2025-12-17 14:30:54', NULL),
+(3, 'Renang', 'adsfsgd', '2025-12-18', '2025-12-23', 'gedung Q', 'Lomba', NULL, 'published', '2025-12-17 16:42:00', NULL),
+(4, 'BalapKarung', 'gaega', '2025-12-18', '2025-12-31', 'Kolam Ikan', 'Lomba', 'default_event.png', 'published', '2025-12-17 18:28:02', 9);
 
 -- --------------------------------------------------------
 
@@ -109,7 +71,11 @@ CREATE TABLE `positions` (
 --
 
 INSERT INTO `positions` (`position_id`, `event_id`, `position_name`, `quota`, `description`, `created_at`) VALUES
-(1, 1, 'Divisi Acara', 5, 'p', '2025-12-17 13:10:20');
+(1, 1, 'Divisi Acara', 5, 'p', '2025-12-17 13:10:20'),
+(2, 3, 'Divisi Sponsor', 10, 'asf', '2025-12-17 16:42:47'),
+(3, 4, 'Acara', 5, NULL, '2025-12-17 18:36:24'),
+(4, 4, 'Perlengkapan', 5, NULL, '2025-12-17 18:36:31'),
+(5, 4, 'Keamanan', 5, NULL, '2025-12-17 18:36:38');
 
 -- --------------------------------------------------------
 
@@ -118,12 +84,28 @@ INSERT INTO `positions` (`position_id`, `event_id`, `position_name`, `quota`, `d
 --
 
 CREATE TABLE `registrations` (
-  `reg_id` int(11) NOT NULL,
+  `registration_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `position_id` int(11) NOT NULL,
-  `registered_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `status` enum('pending','accepted','rejected') DEFAULT 'pending'
+  `position_id_2` int(11) DEFAULT NULL,
+  `motivation` text DEFAULT NULL,
+  `experience` text DEFAULT NULL,
+  `cv_file` varchar(255) DEFAULT NULL,
+  `portfolio_file` varchar(255) DEFAULT NULL,
+  `interview_time` datetime DEFAULT NULL,
+  `meet_link` varchar(255) DEFAULT NULL,
+  `status` enum('pending','accepted','declined') DEFAULT 'pending',
+  `registered_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `registrations`
+--
+
+INSERT INTO `registrations` (`registration_id`, `user_id`, `position_id`, `position_id_2`, `motivation`, `experience`, `cv_file`, `portfolio_file`, `interview_time`, `meet_link`, `status`, `registered_at`) VALUES
+(2, 7, 1, 1, 'adesgfdghgawrr', 'wadefsgrdgwaefsd', 'CV_1765988888_7.pdf', '', '2025-12-19 10:00:00', 'https://meet.google.com/xyz-7474091d', 'pending', '2025-12-17 16:28:08'),
+(3, 7, 2, 2, 'wefrgt', 'daesfrgdhf', 'CV_1765989801_7.pdf', '', '2025-12-19 10:00:00', 'https://meet.google.com/xyz-ec76d892', 'pending', '2025-12-17 16:43:21'),
+(4, 9, 2, 2, 'asspaspa', 'assas', 'CV_1765996971_9.pdf', '', '2025-12-19 10:00:00', 'https://meet.google.com/xyz-e023132d', 'accepted', '2025-12-17 18:42:51');
 
 -- --------------------------------------------------------
 
@@ -134,8 +116,11 @@ CREATE TABLE `registrations` (
 CREATE TABLE `users` (
   `id` int(100) NOT NULL,
   `name` varchar(100) NOT NULL,
+  `nrp` varchar(20) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `email` varchar(100) NOT NULL,
+  `biodata` text DEFAULT NULL,
+  `profile_picture` varchar(255) DEFAULT NULL,
   `role` enum('admin','student') NOT NULL DEFAULT 'student',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -144,27 +129,16 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `password`, `email`, `role`, `created_at`) VALUES
-(1, 'dummy', 'dummy123', '', '', '0000-00-00 00:00:00'),
-(4, 'admin123', '$2y$10$uiZ/k.Rko4U6gmdx7f9YY.5pZi7mfqAINfu0rWOt2mCImT7eJkW5e', 'admin123@gmail.com', 'admin', '0000-00-00 00:00:00'),
-(7, 'SAMUEL KENNETH', '$2y$10$eKdDjb8gWhlzUAnhrHI/2Ovad0IVEM41cwvXOvEUVE6RyidBhwwAO', 'c14240077@john.petra.ac.id', 'student', '2025-12-17 10:09:23'),
-(8, 'Super Admin', '$2y$10$VNo26Z6mmzOnKE3/MrNN6e17nC2XQirxhEtczz1s5cjbUIaUeDo3a', 'admin@john.petra.ac.id', 'admin', '2025-12-17 12:42:57');
+INSERT INTO `users` (`id`, `name`, `nrp`, `password`, `email`, `biodata`, `profile_picture`, `role`, `created_at`) VALUES
+(1, 'dummy', NULL, '$2y$10$uHO1lkz8QGZhwykuZd7rEe4dwZDUGo8V//Imx5URcBKrJ6NKB.SEu', 'dummy@john.petra.ac.id', NULL, NULL, 'student', '0000-00-00 00:00:00'),
+(4, 'admin123', NULL, '$2y$10$uiZ/k.Rko4U6gmdx7f9YY.5pZi7mfqAINfu0rWOt2mCImT7eJkW5e', 'admin123@gmail.com', NULL, NULL, 'admin', '0000-00-00 00:00:00'),
+(7, 'SAMUEL KENNETH', NULL, '$2y$10$eKdDjb8gWhlzUAnhrHI/2Ovad0IVEM41cwvXOvEUVE6RyidBhwwAO', 'c14240077@john.petra.ac.id', NULL, NULL, 'student', '2025-12-17 10:09:23'),
+(8, 'Super Admin', NULL, '$2y$10$VNo26Z6mmzOnKE3/MrNN6e17nC2XQirxhEtczz1s5cjbUIaUeDo3a', 'admin@john.petra.ac.id', NULL, NULL, 'admin', '2025-12-17 12:42:57'),
+(9, 'Sean Vandana Sanjaya', 'c14240092', '$2y$10$uZm0yMR2tzkconDheWHqH.G5pcLjBVmuZ/a6uhEkjcdNR0G1Q8F1W', 'c14240092@john.petra.ac.id', 'Mahasiswa infor angkatan 24\r\n', '1765993543_Me.jpg', 'admin', '2025-12-17 17:01:02');
 
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `applications`
---
-ALTER TABLE `applications`
-  ADD PRIMARY KEY (`application_id`);
-
---
--- Indexes for table `committees`
---
-ALTER TABLE `committees`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `events`
@@ -184,9 +158,10 @@ ALTER TABLE `positions`
 -- Indexes for table `registrations`
 --
 ALTER TABLE `registrations`
-  ADD PRIMARY KEY (`reg_id`),
-  ADD UNIQUE KEY `unique_register` (`user_id`,`position_id`),
-  ADD KEY `position_id` (`position_id`);
+  ADD PRIMARY KEY (`registration_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `position_id` (`position_id`),
+  ADD KEY `position_id_2` (`position_id_2`);
 
 --
 -- Indexes for table `users`
@@ -199,40 +174,28 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `applications`
---
-ALTER TABLE `applications`
-  MODIFY `application_id` int(100) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `committees`
---
-ALTER TABLE `committees`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `event_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `event_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `positions`
 --
 ALTER TABLE `positions`
-  MODIFY `position_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `position_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `registrations`
 --
 ALTER TABLE `registrations`
-  MODIFY `reg_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `registration_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
@@ -249,7 +212,8 @@ ALTER TABLE `positions`
 --
 ALTER TABLE `registrations`
   ADD CONSTRAINT `registrations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `registrations_ibfk_2` FOREIGN KEY (`position_id`) REFERENCES `positions` (`position_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `registrations_ibfk_2` FOREIGN KEY (`position_id`) REFERENCES `positions` (`position_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `registrations_ibfk_3` FOREIGN KEY (`position_id_2`) REFERENCES `positions` (`position_id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
