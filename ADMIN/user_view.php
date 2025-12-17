@@ -55,7 +55,7 @@ if (!$result) {
                                 </span>
                             </td>
                             <td class="text-center">
-                                <a href="user_edit.php?event_id=<?= $e['id'] ?>" class="btn btn-info btn-sm text-white me-1" title="Lihat Panitia">
+                                <a href="user_edit.php?id=<?= $e['id'] ?>" class="btn btn-info btn-sm text-white me-1" title="edit user">
                                     <i class="fas fa-users me-1"></i> Edit
                                 </a>
                                 <a href="delete_user.php?id=<?= $e['id'] ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Yakin hapus user ini?');">

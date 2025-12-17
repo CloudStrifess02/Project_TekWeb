@@ -38,6 +38,11 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item me-3">
+                         <a href="../STUDENT/index.php" class="nav-link text-white active fw-semibold">
+                            <i class=""></i> Student
+                        </a>
+                    </li>
+                    <li class="nav-item me-3">
                          <a href="user_view.php" class="nav-link text-white active fw-semibold">
                             <i class="bi bi-person me-1"></i> Users
                         </a>

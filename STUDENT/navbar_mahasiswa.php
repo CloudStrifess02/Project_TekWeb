@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['user_login']) || $_SESSION['role'] != 'student') {
+if (!isset($_SESSION['user_login'])) {
     header("Location: ../LOGIN/login.php");
     exit();
 }
@@ -55,6 +55,13 @@ if (!isset($_SESSION['user_login']) || $_SESSION['role'] != 'student') {
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
+                    <?php if($_SESSION['role'] == "admin"): ?>
+                    <li class="nav-item me-3">
+                         <a href="../ADMIN/admin_dashboard.php" class="nav-link text-white active fw-semibold">
+                            <i class=""></i> Admin
+                        </a>
+                    </li>
+                    <?php endif; ?>
                     <li class="nav-item me-3">
                          <a href="index.php" class="nav-link text-white active fw-semibold">
                             <i class="bi bi-person me-1"></i> Profile
