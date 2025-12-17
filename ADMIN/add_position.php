@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../LOGIN/connection.php';
+require_once '../koneksi.php';
 
 // Cek Admin
 if (!isset($_SESSION['user_login']) || $_SESSION['role'] !== 'admin') {

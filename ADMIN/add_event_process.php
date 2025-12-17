@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../LOGIN/connection.php'; // Pastikan path koneksi benar
+require_once '../koneksi.php'; // Pastikan path koneksi benar
 
 // Cek apakah form disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

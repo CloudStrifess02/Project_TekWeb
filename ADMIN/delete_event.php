@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../LOGIN/connection.php';
+require_once '../koneksi.php';
 
 // 1. Cek Keamanan: Pastikan yang akses adalah Admin
 if (!isset($_SESSION['user_login']) || $_SESSION['role'] !== 'admin') {

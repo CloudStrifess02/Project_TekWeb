@@ -8,7 +8,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 // 2. Hubungkan ke Database
-include '../LOGIN/connection.php';
+require_once '../koneksi.php';
 ?>
 
 <!DOCTYPE html>
