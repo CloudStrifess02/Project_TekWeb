@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_login']) || $_SESSION['role'] !== 'admin') {
 // 2. Hubungkan ke Database
 require_once '../LOGIN/connection.php';
 
-// 3. Ambil semua event dari tabel 'events' yang baru dibuat
+// 3. Ambil semua event dari tabel 'events'
 $query = "SELECT * FROM events ORDER BY created_at DESC";
 $result = mysqli_query($conn, $query);
 
@@ -34,6 +34,8 @@ if (!$result) {
         .dashboard-container { margin-top: 30px; margin-bottom: 50px; }
         .table th { background-color: #343a40; color: white; vertical-align: middle; }
         .btn-sm { font-size: 0.8rem; }
+        .badge-interactive { cursor: pointer; transition: 0.2s; }
+        .badge-interactive:hover { opacity: 0.8; transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -72,11 +74,23 @@ if (!$result) {
             </a>
         </div>
 
-        <?php if (isset($_GET['msg']) && $_GET['msg'] == 'success') { ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i><strong>Berhasil!</strong> Event baru telah berhasil disimpan.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+        <?php if (isset($_GET['msg'])) { ?>
+            <?php if ($_GET['msg'] == 'success') { ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i><strong>Berhasil!</strong> Event baru telah berhasil disimpan.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php } elseif ($_GET['msg'] == 'published') { ?>
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <i class="fas fa-upload me-2"></i><strong>Berhasil!</strong> Event telah dipublikasikan dan sekarang terlihat oleh mahasiswa.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php } elseif ($_GET['msg'] == 'deleted') { ?>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class="fas fa-trash-alt me-2"></i> Event telah berhasil dihapus.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php } ?>
         <?php } ?>
 
         <div class="card shadow-sm border-0">
@@ -111,25 +125,29 @@ if (!$result) {
                                         </td>
                                         <td>
                                             <?php 
-                                            // Badge Status Sederhana
                                             $status = $e['event_status'] ?? 'draft';
                                             if($status == 'published') {
                                                 echo '<span class="badge bg-success">Publish</span>';
                                             } else {
-                                                echo '<span class="badge bg-secondary">Draft</span>';
+                                                // Link untuk mengubah draft menjadi publish
+                                                echo '<a href="update_event_status.php?id='.$e['event_id'].'" 
+                                                         class="badge bg-secondary text-decoration-none badge-interactive" 
+                                                         onclick="return confirm(\'Publikasikan event ini agar bisa dilihat mahasiswa?\')">
+                                                         Draft
+                                                      </a>';
                                             }
                                             ?>
                                         </td>
                                         <td class="text-center">
-                                            <a href="view_positions.php?event_id=<?= $e['event_id'] ?>" class="btn btn-info btn-sm text-white me-1">
+                                            <a href="view_positions.php?event_id=<?= $e['event_id'] ?>" class="btn btn-info btn-sm text-white me-1" title="Lihat Panitia">
                                                 <i class="fas fa-users me-1"></i> Panitia
                                             </a>
                                             
-                                            <a href="add_position.php?event_id=<?= $e['event_id'] ?>" class="btn btn-success btn-sm me-1">
+                                            <a href="add_position.php?event_id=<?= $e['event_id'] ?>" class="btn btn-success btn-sm me-1" title="Tambah Posisi">
                                                 <i class="fas fa-user-plus"></i>
                                             </a>
 
-                                            <a href="#" class="btn btn-outline-danger btn-sm" onclick="return confirm('Yakin hapus event ini?');">
+                                            <a href="delete_event.php?id=<?= $e['event_id'] ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Yakin hapus event ini? Semua data posisi dan pendaftar di dalamnya akan ikut terhapus!');">
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         </td>
