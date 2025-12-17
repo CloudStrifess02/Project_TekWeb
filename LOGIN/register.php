@@ -6,7 +6,6 @@ if (isset($_POST['register'])) {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $role = $_POST['role'];
 
     // --- SATPAM BARU: CEK DOMAIN EMAIL ---
     $domain = substr(strrchr($email, "@"), 1); // Ambil teks setelah @
@@ -27,7 +26,7 @@ if (isset($_POST['register'])) {
         echo "<script>alert('Email ini sudah terdaftar!');</script>";
     } else {
         // Masukkan ke database
-        $query = "INSERT INTO users (name, email, password, role) VALUES ('$name', '$email', '$password', '$role')";
+        $query = "INSERT INTO users (name, email, password, role) VALUES ('$name', '$email', '$password', 'student')";
         
         if (mysqli_query($conn, $query)) {
             echo "<script>alert('Registrasi Berhasil! Silakan Login.'); window.location.href='login.php';</script>";
@@ -61,12 +60,6 @@ if (isset($_POST['register'])) {
 
             <label>Password:</label>
             <input type="password" name="password" required>
-
-            <label>Role:</label>
-            <select name="role">
-                <option value="student">Student</option>
-                <option value="admin">Admin</option>
-            </select>
 
             <button type="submit" name="register">Daftar Sekarang</button>
         </form>
