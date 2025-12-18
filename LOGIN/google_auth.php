@@ -2,7 +2,7 @@
 // google_auth.php
 session_start();
 require_once 'config_google.php';
-require_once 'connection.php'; // Wajib koneksi database
+require_once '../koneksi.php'; // Wajib koneksi database
 
 if (isset($_GET['code'])) {
     
@@ -45,6 +45,7 @@ if (isset($_GET['code'])) {
             $_SESSION['email'] = $user['email'];
             $_SESSION['name']  = $user['name'];
             $_SESSION['role']  = $user['role'];
+            $_SESSION['id']    = $user['id'];
 
             // Redirect sesuai jabatan
             if ($user['role'] == 'admin') {
