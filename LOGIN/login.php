@@ -1,78 +1,145 @@
 <?php
+// --- BAGIAN LOGIK (Dari Kode Asli) ---
+// Memanggil file konfigurasi Google Client Library
 require_once 'config_google.php'; 
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Login</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .login-container { width: 300px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
-        input { width: 93%; padding: 8px; margin: 5px 0; }
-        button { width: 100%; padding: 10px; cursor: pointer; }
-        
-        .separator { text-align: center; margin: 20px 0; color: #666; position: relative; }
-        .separator::before, .separator::after { content: ""; height: 1px; background: #ccc; position: absolute; top: 50%; width: 40%; }
-        .separator::before { left: 0; }
-        .separator::after { right: 0; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
 
-        .google-btn {
-            background-color: #dd4b39;
-            color: white;
-            border: none;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-            font-size: 14px;
-            border-radius: 4px;
-            padding: 10px;
-            width: 100%; 
-            box-sizing: border-box; 
-        }
-        .google-btn:hover { background-color: #c23321; }
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-                .register-link {
-            text-align: center; 
-            margin-top: 20px; 
-            font-size: 14px;
-        }
-        .register-link a {
-            color: #2196F3; 
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .register-link a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-image: url("../bg2.jpeg");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      margin: 0;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(255,255,255,0.2); 
+      z-index: -1;
+    }
+
+    .login-card {
+      max-width: 600px;
+      width: 100%;
+      margin: 90px auto;
+      padding: 30px;
+      background: rgba(255,255,255,0.95); 
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      color: #1e293b; 
+    }
+
+    .login-card h3 {
+      font-weight: 700;
+      background: linear-gradient(to right, #4d6980, #4CAF50);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .form-control {
+      border-radius: 12px;
+    }
+
+    .btn-login {
+      background: linear-gradient(135deg, #4d6980 0%, #4CAF50 100%);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .btn-login:hover {
+      opacity: 0.9;
+      box-shadow: 0 5px 15px rgba(77,105,128,0.4);
+    }
+
+    .btn-google {
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      background-color: #f8fafc;
+      color: #1e293b;
+      font-weight: 600;
+      text-decoration: none; 
+    }
+    .btn-google:hover {
+      background-color: #e2e8f0;
+      color: #1e293b;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 15px;
+      color: #334155;
+    }
+    .register-link a {
+      color: #4CAF50;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
-<body>
+<body class="d-flex align-items-center justify-content-center vh-100">
 
-<div class="login-container">
-    <h2 style="text-align:center;">Login</h2>
+  <div class="login-card">
+    <div class="text-center mb-4">
+      <h3>Login</h3>
+    </div>
 
-    <form action="login_process.php" method="POST">
-        <label>Email:</label><br>
-        <input type="email" name="email" required placeholder="user@john.petra.ac.id"><br>
+    <form action="login_process.php" method="POST" class="needs-validation" novalidate>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="user@john.petra.ac.id" required>
+        <div class="invalid-feedback">Masukkan email yang valid.</div>
+      </div>
 
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+        <div class="invalid-feedback">Password wajib diisi.</div>
+      </div>
 
-        <button type="submit" style="background-color: #4CAF50; color: white; border: none;">Login</button>
+      <button type="submit" class="btn btn-login w-100 mb-3">Login</button>
     </form>
 
-    <div class="separator">atau</div>
+    <div class="d-flex align-items-center my-3">
+      <hr class="flex-grow-1">
+      <span class="px-2 text-muted">atau</span>
+      <hr class="flex-grow-1">
+    </div>
 
-    <a href="<?php echo $client->createAuthUrl(); ?>" class="google-btn">
+    <a href="<?php echo $client->createAuthUrl(); ?>" class="btn btn-google w-100 d-flex align-items-center justify-content-center mb-3">
+      <i class="bi bi-google me-3"></i>
         Login dengan Google Account
     </a>
 
     <div class="register-link">
-        Belum punya akun? <a href="register.php">Daftar disini</a>
+      Belum punya akun? <a href="register.php">Daftar disini</a>
     </div>
-
-</div>
+  </div>
 
 </body>
 </html>
