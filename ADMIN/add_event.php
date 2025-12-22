@@ -208,8 +208,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const end = document.querySelector('[name="event_end_date"]');
   const errorText = document.getElementById("dateError");
 
+  const today = new Date().toISOString().split('T')[0];
+  
+  start.min = today;
+
   function validateDate() {
+    if (start.value && start.value < today) {
+      errorText.textContent = "Start date cannot be in the past.";
+      errorText.style.display = "block";
+      start.value = "";
+      return;
+    }
+
     if (start.value && end.value && end.value < start.value) {
+      errorText.textContent = "End date cannot be before start date.";
       errorText.style.display = "block";
       end.value = "";
     } else {

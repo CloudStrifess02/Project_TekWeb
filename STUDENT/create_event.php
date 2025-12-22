@@ -103,6 +103,16 @@ if (isset($_POST['create_event'])) {
     <meta charset="UTF-8">
     <title>Buat Event Baru</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    .required-note {
+      font-size: 13px;
+      color: #dc2626;
+    }
+    .req {
+      color: #dc2626;
+      margin-left: 3px;
+    }
+    </style>
 </head>
 <body class="bg-light">
 
@@ -110,6 +120,7 @@ if (isset($_POST['create_event'])) {
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">Buat Event Baru</h4>
+            <div class="required-note">* Wajib diisi</div>
         </div>
 
         <div class="card-body">
@@ -123,7 +134,7 @@ if (isset($_POST['create_event'])) {
             <form method="POST" enctype="multipart/form-data">
 
                 <div class="mb-3">
-                    <label class="form-label">Nama Event</label>
+                    <label class="form-label">Nama Event <span class="req">*</span></label>
                     <input type="text" name="event_name" class="form-control" required>
                 </div>
 
@@ -134,7 +145,7 @@ if (isset($_POST['create_event'])) {
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Tanggal Mulai</label>
+                        <label class="form-label">Tanggal Mulai<span class="req">*</span></label>
                         <input type="date" name="event_date" class="form-control" required>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -149,11 +160,13 @@ if (isset($_POST['create_event'])) {
                         <input type="text" name="location" class="form-control" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Kategori</label>
+                        <label class="form-label">Kategori<span class="req">*</span></label>
                         <select name="category" class="form-select">
+                            <option value="">-- Pilih Kategori --</option>
                             <option value="Seminar">Seminar</option>
-                            <option value="Lomba">Lomba</option>
+                            <option value="Workshop">Workshop</option>
                             <option value="Open Recruitment">Open Recruitment</option>
+                            <option value="Lomba">Lomba</option>
                         </select>
                     </div>
                 </div>
@@ -176,6 +189,42 @@ if (isset($_POST['create_event'])) {
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const start = document.querySelector('[name="event_date"]');
+  const end = document.querySelector('[name="event_end_date"]');
+  const errorText = document.getElementById("dateError");
+
+  const today = new Date().toISOString().split('T')[0];
+  
+  start.min = today;
+
+  function validateDate() {
+    if (start.value && start.value < today) {
+      errorText.textContent = "Start date cannot be in the past.";
+      errorText.style.display = "block";
+      start.value = "";
+      return;
+    }
+
+    if (start.value && end.value && end.value < start.value) {
+      errorText.textContent = "End date cannot be before start date.";
+      errorText.style.display = "block";
+      end.value = "";
+    } else {
+      errorText.style.display = "none";
+    }
+  }
+
+  start.addEventListener("change", () => {
+    end.min = start.value;
+    validateDate();
+  });
+
+  end.addEventListener("change", validateDate);
+});
+</script>
 
 </body>
 </html>

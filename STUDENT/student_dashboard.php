@@ -33,7 +33,7 @@ $sql = "
         )) AS sisa_slot
     FROM positions p
     JOIN events e ON p.event_id = e.event_id
-    WHERE e.event_status = 'published'
+    WHERE e.event_status = 'published' AND e.event_date > CURDATE()
 ";
 
 $params = [];
