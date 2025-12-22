@@ -7,22 +7,16 @@ if (isset($_POST['register'])) {
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $domain = substr(strrchr($email, "@"), 1);
     
-    if ($domain !== 'john.petra.ac.id') {
-        echo "<script>
-            alert('REGISTRASI DITOLAK!\\nHanya email @john.petra.ac.id yang boleh mendaftar.');
-            window.location.href='register.php';
-        </script>";
-        exit();
-    }
+   
 
     $cek_email = mysqli_query($conn, "SELECT email FROM users WHERE email = '$email'");
     if (mysqli_num_rows($cek_email) > 0) {
-        echo "<script>alert('Email ini sudah terdaftar!');</script>";
+        
     } else {
         $query = "INSERT INTO users (name, email, password, role) VALUES ('$name', '$email', '$password', 'student')";
         
         if (mysqli_query($conn, $query)) {
-            echo "<script>alert('Registrasi Berhasil! Silakan Login.'); window.location.href='login.php';</script>";
+           
         } else {
             echo "Error: " . mysqli_error($conn);
         }

@@ -36,13 +36,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         } else {
             echo "<script>
-                    alert('Login gagal! Password salah.');
                     window.location.href = 'login.php';
                   </script>";
         }
     } else {
         echo "<script>
-                alert('Login gagal! Email tidak terdaftar.');
                 window.location.href = 'login.php';
               </script>";
     }

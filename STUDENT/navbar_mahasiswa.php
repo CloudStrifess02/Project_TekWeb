@@ -45,7 +45,7 @@ if (!isset($_SESSION['user_login'])) {
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold"><i class="fas fa-graduation-cap me-2"></i>Portal Mahasiswa</a>
             

@@ -1,189 +1,237 @@
 <?php
 session_start();
-include '../koneksi.php';
+require_once '../koneksi.php';
 
-if (!isset($_SESSION['id']) || !isset($_GET['id'])) {
+
+if (!isset($_SESSION['id'])) {
     header("Location: index.php");
-    exit;
+    exit();
 }
 
-$id = $_SESSION['id'];
-$event_id = $_GET['id'];
+$user_id  = $_SESSION['id'];
 
-$check_owner = mysqli_query($conn, "SELECT * FROM events WHERE event_id='$event_id' AND created_by='$id'");
-if (mysqli_num_rows($check_owner) == 0) {
-    echo "<script>alert('Anda bukan panitia inti/pembuat event ini!'); window.location='index.php';</script>";
-    exit;
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    header("Location: index.php");
+    exit();
 }
-$event_data = mysqli_fetch_assoc($check_owner);
+
+$event_id = (int) $_GET['id'];
+
+$stmt = mysqli_prepare($conn, "
+    SELECT * FROM events 
+    WHERE event_id = ? AND created_by = ?
+    LIMIT 1
+");
+mysqli_stmt_bind_param($stmt, "ii", $event_id, $user_id);
+mysqli_stmt_execute($stmt);
+$event_result = mysqli_stmt_get_result($stmt);
+$event_data = mysqli_fetch_assoc($event_result);
+
+if (!$event_data) {
+    exit();
+}
 
 if (isset($_POST['add_position'])) {
-    $pos_name = mysqli_real_escape_string($conn, $_POST['position_name']);
-    $quota = (int) $_POST['quota'];
-    mysqli_query($conn, "INSERT INTO positions (event_id, position_name, quota) VALUES ('$event_id', '$pos_name', '$quota')");
-    echo "<script>alert('Divisi berhasil ditambahkan'); window.location='manage_event.php?id=$event_id';</script>";
-}
+    $pos_name = trim($_POST['position_name']);
+    $quota    = (int) $_POST['quota'];
 
-if (isset($_GET['action']) && isset($_GET['reg_id'])) {
-    $reg_id = $_GET['reg_id'];
-    $action = $_GET['action'];
-    
-    if ($action == 'accept') {
-        mysqli_query($conn, "UPDATE registrations SET status='accepted' WHERE registration_id='$reg_id'");
-    } elseif ($action == 'kick' || $action == 'decline') {
-        mysqli_query($conn, "UPDATE registrations SET status='declined' WHERE registration_id='$reg_id'");
+    if ($pos_name !== '' && $quota > 0) {
+        $stmt = mysqli_prepare($conn, "
+            INSERT INTO positions (event_id, position_name, quota)
+            VALUES (?, ?, ?)
+        ");
+        mysqli_stmt_bind_param($stmt, "isi", $event_id, $pos_name, $quota);
+        mysqli_stmt_execute($stmt);
     }
-    echo "<script>window.location='manage_event.php?id=$event_id';</script>";
+
+    header("Location: manage_event.php?id=$event_id");
+    exit();
 }
 
 if (isset($_POST['update_event'])) {
-    $name = mysqli_real_escape_string($conn, $_POST['event_name']);
-    $desc = mysqli_real_escape_string($conn, $_POST['description']);
-    mysqli_query($conn, "UPDATE events SET event_name='$name', event_description='$desc' WHERE event_id='$event_id'");
-    echo "<script>alert('Info event diupdate'); window.location='manage_event.php?id=$event_id';</script>";
+    $name = trim($_POST['event_name']);
+    $desc = trim($_POST['description']);
+
+    $stmt = mysqli_prepare($conn, "
+        UPDATE events 
+        SET event_name = ?, event_description = ?
+        WHERE event_id = ?
+    ");
+    mysqli_stmt_bind_param($stmt, "ssi", $name, $desc, $event_id);
+    mysqli_stmt_execute($stmt);
+
+    header("Location: manage_event.php?id=$event_id");
+    exit();
 }
 
-$query_applicants = "
-    SELECT r.*, u.name as mhs_name, u.nrp, u.email, p.position_name 
-    FROM registrations r 
-    JOIN users u ON r.user_id = u.id 
-    JOIN positions p ON r.position_id = p.position_id 
-    WHERE p.event_id = '$event_id'
-    ORDER BY r.registered_at DESC
-";
-$applicants = mysqli_query($conn, $query_applicants);
+if (isset($_GET['action'], $_GET['reg_id']) && is_numeric($_GET['reg_id'])) {
 
-$positions = mysqli_query($conn, "SELECT * FROM positions WHERE event_id='$event_id'");
+    $reg_id = (int) $_GET['reg_id'];
+    $action = $_GET['action'];
+
+    if (in_array($action, ['accept', 'decline', 'kick'])) {
+
+        $status = ($action === 'accept') ? 'accepted' : 'declined';
+
+        $stmt = mysqli_prepare($conn, "
+            UPDATE registrations 
+            SET status = ?
+            WHERE registration_id = ?
+        ");
+        mysqli_stmt_bind_param($stmt, "si", $status, $reg_id);
+        mysqli_stmt_execute($stmt);
+    }
+
+    header("Location: manage_event.php?id=$event_id");
+    exit();
+}
+
+$stmt = mysqli_prepare($conn, "
+    SELECT r.*, u.name AS mhs_name, u.nrp, u.email, p.position_name
+    FROM registrations r
+    JOIN users u ON r.user_id = u.id
+    JOIN positions p ON r.position_id = p.position_id
+    WHERE p.event_id = ?
+    ORDER BY r.registered_at DESC
+");
+mysqli_stmt_bind_param($stmt, "i", $event_id);
+mysqli_stmt_execute($stmt);
+$applicants = mysqli_stmt_get_result($stmt);
+
+
+$stmt = mysqli_prepare($conn, "
+    SELECT * FROM positions WHERE event_id = ?
+");
+mysqli_stmt_bind_param($stmt, "i", $event_id);
+mysqli_stmt_execute($stmt);
+$positions = mysqli_stmt_get_result($stmt);
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <title>Manage Event: <?php echo htmlspecialchars($event_data['event_name']); ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Kelola Event - <?= htmlspecialchars($event_data['event_name']); ?></title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-light">
-    
-    <nav class="navbar navbar-dark bg-dark mb-4">
-        <div class="container">
-            <span class="navbar-brand">Kelola Event: <?php echo htmlspecialchars($event_data['event_name']); ?></span>
-            <a href="index.php" class="btn btn-outline-light btn-sm">Kembali ke Dashboard</a>
-        </div>
-    </nav>
 
-    <div class="container">
-        
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card shadow mb-4">
-                    <div class="card-header bg-primary text-white">Edit Informasi Dasar</div>
-                    <div class="card-body">
-                        <form method="POST">
-                            <div class="mb-2">
-                                <label>Nama Event</label>
-                                <input type="text" name="event_name" class="form-control" value="<?php echo htmlspecialchars($event_data['event_name']); ?>">
-                            </div>
-                            <div class="mb-2">
-                                <label>Deskripsi</label>
-                                <textarea name="description" class="form-control" rows="3"><?php echo htmlspecialchars($event_data['event_description']); ?></textarea>
-                            </div>
-                            <button type="submit" name="update_event" class="btn btn-primary btn-sm w-100">Update Info</button>
-                        </form>
-                    </div>
-                </div>
+<nav class="navbar navbar-dark bg-dark mb-4">
+<div class="container">
+<span class="navbar-brand">Kelola Event: <?= htmlspecialchars($event_data['event_name']); ?></span>
+<a href="index.php" class="btn btn-outline-light btn-sm">Dashboard</a>
+</div>
+</nav>
 
-                <div class="card shadow">
-                    <div class="card-header bg-success text-white">Tambah Divisi / Posisi</div>
-                    <div class="card-body">
-                        <form method="POST">
-                            <div class="mb-2">
-                                <label>Nama Divisi</label>
-                                <input type="text" name="position_name" class="form-control" placeholder="Contoh: Divisi Acara" required>
-                            </div>
-                            <div class="mb-2">
-                                <label>Kuota</label>
-                                <input type="number" name="quota" class="form-control" value="5">
-                            </div>
-                            <button type="submit" name="add_position" class="btn btn-success btn-sm w-100">Tambah Divisi</button>
-                        </form>
-                        <hr>
-                        <h6>Divisi Saat Ini:</h6>
-                        <ul class="list-group list-group-flush small">
-                            <?php while($pos = mysqli_fetch_assoc($positions)): ?>
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <?php echo $pos['position_name']; ?>
-                                    <span class="badge bg-secondary"><?php echo $pos['quota']; ?> Orang</span>
-                                </li>
-                            <?php endwhile; ?>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+<div class="container">
+<div class="row">
 
-            <div class="col-md-8">
-                <div class="card shadow">
-                    <div class="card-header bg-white">
-                        <h5 class="mb-0">Pendaftar & Anggota</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0 align-middle">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Nama / nrp</th>
-                                        <th>Divisi Dilamar</th>
-                                        <th>File</th>
-                                        <th>Status</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if(mysqli_num_rows($applicants) > 0): ?>
-                                        <?php while($row = mysqli_fetch_assoc($applicants)): ?>
-                                        <tr>
-                                            <td>
-                                                <strong><?php echo htmlspecialchars($row['mhs_name']); ?></strong><br>
-                                                <small class="text-muted"><?php echo $row['nrp']; ?></small>
-                                            </td>
-                                            <td><?php echo htmlspecialchars($row['position_name']); ?></td>
-                                            <td>
-                                                <?php if($row['cv_file']): ?>
-                                                    <a href="../uploads/<?php echo $row['cv_file']; ?>" target="_blank" class="badge bg-secondary text-decoration-none">Lihat CV</a>
-                                                <?php else: ?>
-                                                    -
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <?php 
-                                                if($row['status'] == 'pending') echo '<span class="badge bg-warning text-dark">Pending</span>';
-                                                elseif($row['status'] == 'accepted') echo '<span class="badge bg-success">Diterima</span>';
-                                                else echo '<span class="badge bg-danger">Ditolak</span>';
-                                                ?>
-                                            </td>
-                                            <td>
-                                                <?php if($row['status'] == 'pending'): ?>
-                                                    <a href="manage_event.php?id=<?php echo $event_id; ?>&action=accept&reg_id=<?php echo $row['registration_id']; ?>" class="btn btn-success btn-sm" onclick="return confirm('Terima mahasiswa ini?')">Terima</a>
-                                                    <a href="manage_event.php?id=<?php echo $event_id; ?>&action=decline&reg_id=<?php echo $row['registration_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Tolak mahasiswa ini?')">Tolak</a>
-                                                <?php elseif($row['status'] == 'accepted'): ?>
-                                                    <a href="manage_event.php?id=<?php echo $event_id; ?>&action=kick&reg_id=<?php echo $row['registration_id']; ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Keluarkan anggota ini dari panitia?')">Keluarkan</a>
-                                                <?php else: ?>
-                                                    <span class="text-muted small">-</span>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                        <?php endwhile; ?>
-                                    <?php else: ?>
-                                        <tr><td colspan="5" class="text-center py-4">Belum ada pendaftar.</td></tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- KIRI -->
+<div class="col-md-4">
 
-        </div>
-    </div>
+<div class="card shadow mb-4">
+<div class="card-header bg-primary text-white">Edit Event</div>
+<div class="card-body">
+<form method="POST">
+<div class="mb-2">
+<label>Nama Event</label>
+<input type="text" name="event_name" class="form-control" value="<?= htmlspecialchars($event_data['event_name']); ?>" required>
+</div>
+<div class="mb-2">
+<label>Deskripsi</label>
+<textarea name="description" class="form-control" rows="3"><?= htmlspecialchars($event_data['event_description']); ?></textarea>
+</div>
+<button name="update_event" class="btn btn-primary btn-sm w-100">Update</button>
+</form>
+</div>
+</div>
+
+<div class="card shadow">
+<div class="card-header bg-success text-white">Tambah Divisi</div>
+<div class="card-body">
+<form method="POST">
+<div class="mb-2">
+<input type="text" name="position_name" class="form-control" placeholder="Nama Divisi" required>
+</div>
+<div class="mb-2">
+<input type="number" name="quota" class="form-control" value="5" min="1">
+</div>
+<button name="add_position" class="btn btn-success btn-sm w-100">Tambah</button>
+</form>
+
+<hr>
+<ul class="list-group list-group-flush small">
+<?php while($p = mysqli_fetch_assoc($positions)): ?>
+<li class="list-group-item d-flex justify-content-between">
+<?= htmlspecialchars($p['position_name']); ?>
+<span class="badge bg-secondary"><?= $p['quota']; ?></span>
+</li>
+<?php endwhile; ?>
+</ul>
+
+</div>
+</div>
+
+</div>
+
+<!-- KANAN -->
+<div class="col-md-8">
+<div class="card shadow">
+<div class="card-header">Pendaftar</div>
+<div class="card-body p-0">
+<table class="table table-hover mb-0">
+<thead class="table-light">
+<tr>
+<th>Nama</th>
+<th>Divisi</th>
+<th>CV</th>
+<th>Status</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody>
+
+<?php if(mysqli_num_rows($applicants) > 0): ?>
+<?php while($a = mysqli_fetch_assoc($applicants)): ?>
+<tr>
+<td>
+<strong><?= htmlspecialchars($a['mhs_name']); ?></strong><br>
+<small><?= htmlspecialchars($a['nrp']); ?></small>
+</td>
+<td><?= htmlspecialchars($a['position_name']); ?></td>
+<td>
+<?php if($a['cv_file']): ?>
+<a href="../uploads/<?= htmlspecialchars($a['cv_file']); ?>" target="_blank">Lihat</a>
+<?php else: ?>-<?php endif; ?>
+</td>
+<td>
+<span class="badge bg-<?= $a['status']=='accepted'?'success':($a['status']=='pending'?'warning':'danger'); ?>">
+<?= ucfirst($a['status']); ?>
+</span>
+</td>
+<td>
+<?php if($a['status']=='pending'): ?>
+<a href="?id=<?= $event_id; ?>&action=accept&reg_id=<?= $a['registration_id']; ?>" class="btn btn-success btn-sm">Terima</a>
+<a href="?id=<?= $event_id; ?>&action=decline&reg_id=<?= $a['registration_id']; ?>" class="btn btn-danger btn-sm">Tolak</a>
+<?php elseif($a['status']=='accepted'): ?>
+<a href="?id=<?= $event_id; ?>&action=kick&reg_id=<?= $a['registration_id']; ?>" class="btn btn-outline-danger btn-sm">Kick</a>
+<?php endif; ?>
+</td>
+</tr>
+<?php endwhile; ?>
+<?php else: ?>
+<tr><td colspan="5" class="text-center py-4">Belum ada pendaftar</td></tr>
+<?php endif; ?>
+
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+</div>
+</div>
 
 </body>
 </html>
