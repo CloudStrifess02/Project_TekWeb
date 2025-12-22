@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 22, 2025 at 05:59 PM
+-- Generation Time: Dec 22, 2025 at 07:10 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -53,7 +53,8 @@ INSERT INTO `events` (`event_id`, `event_name`, `event_description`, `event_date
 (7, 'HutLk', 'afefeaf', '2025-12-17', '2025-12-31', 'Online', 'Seminar', 'event_1766027326.png', 'published', '2025-12-18 03:10:03', NULL),
 (8, 'iyuhuhytuyi', 'dvwww', '2025-12-19', '2025-12-27', 'Online', 'Seminar', 'event_1766027799.png', 'published', '2025-12-18 03:17:29', 4),
 (9, 'Acara Lama', 'GTAWTTAW', '2025-12-15', '2025-12-16', 'Online', 'Seminar', 'default_event.png', 'published', '2025-12-18 03:20:05', 4),
-(10, 'Career Kickstart', 'dsasfdgb', '2025-12-23', '2025-12-25', 'Online', 'Seminar', NULL, 'published', '2025-12-22 16:06:51', NULL);
+(10, 'Career Kickstart', 'dsasfdgb', '2025-12-23', '2025-12-25', 'Online', 'Seminar', NULL, 'published', '2025-12-22 16:06:51', NULL),
+(11, 'BALAP KUDAAAA', 'afafafe', '2026-01-14', '2026-01-30', 'Denpasar', 'Lomba', NULL, 'published', '2025-12-22 17:05:25', NULL);
 
 -- --------------------------------------------------------
 
@@ -83,7 +84,8 @@ INSERT INTO `positions` (`position_id`, `event_id`, `position_name`, `quota`, `d
 (7, 7, 'Divisi Acara', 10, 'gitu ae', '2025-12-18 03:09:23'),
 (8, 7, 'Divisi Abc', 2, 'gtw', '2025-12-18 03:09:46'),
 (9, 8, 'Divisi Sponsor', 5, NULL, '2025-12-18 03:16:56'),
-(10, 9, 'Divisi Sponsor', 5, NULL, '2025-12-18 03:19:49');
+(10, 9, 'Divisi Sponsor', 5, NULL, '2025-12-18 03:19:49'),
+(11, 11, 'Ketua', 1, '', '2025-12-22 17:05:20');
 
 -- --------------------------------------------------------
 
@@ -188,13 +190,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `event_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `event_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `positions`
 --
 ALTER TABLE `positions`
-  MODIFY `position_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `position_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `registrations`
